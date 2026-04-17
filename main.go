@@ -45,5 +45,20 @@ func handleRequest(w http.ResponseWriter, r *http.Request){
 
 	requestTotal.WithLabelValues(r.Method, r.URL.Path,
         fmt.Sprintf("%d", status)).Inc()
+
+	//record histogram
+	requestDuration.WithLabelValues(r.URL.Path).
+	Observe(time.Since(start).Seconds())
+
+	w.WriteHeader(status)
+}
+
+func main(){
+	http.HandleFunc("/api/test", handleRequest)
+    http.Handle("/metrics", promhttp.Handler())
+
+    fmt.Println("Visit http://localhost:2112/metrics")
+    fmt.Println("Call http://localhost:2112/api/test a few times first")
+    http.ListenAndServe(":2112", nil)
 }
 
