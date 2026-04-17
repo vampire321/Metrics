@@ -22,5 +22,12 @@ var (
         Name: "myapp_active_connections",
         Help: "Current active connections",
     })
-	
+
+	// HISTOGRAM — request duration distribution
+    requestDuration = promauto.NewHistogramVec(prometheus.HistogramOpts{
+        Name:    "myapp_request_duration_seconds",
+        Help:    "Request duration in seconds",
+        Buckets: []float64{.005, .01, .025, .05, .1, .25, .5, 1, 2.5},
+    }, []string{"path"})
+
 )
