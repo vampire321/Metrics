@@ -16,4 +16,11 @@ var (
 		Name:"myapp_total_request",
 		Help:"The total number of requests received",
 	},[]string{"method","path","status"})
+
+	 // GAUGE — current active connections
+    activeConns = promauto.NewGauge(prometheus.GaugeOpts{
+        Name: "myapp_active_connections",
+        Help: "Current active connections",
+    })
+	
 )
