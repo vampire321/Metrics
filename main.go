@@ -29,5 +29,21 @@ var (
         Help:    "Request duration in seconds",
         Buckets: []float64{.005, .01, .025, .05, .1, .25, .5, 1, 2.5},
     }, []string{"path"})
-
 )
+
+func handleRequest(w http.ResponseWriter, r *http.Request){
+	start := time.Now()
+	activeConns.Inc()
+	defer activeConns.Dec()
+
+	time.Sleep(time.Duration(rand.Intn(200)) * time.Millisecond)
+
+    status := 200
+    if rand.Intn(10) == 0 { // 10% error rate
+        status = 500
+    }
+
+	requestTotal.WithLabelValues(r.Method, r.URL.Path,
+        fmt.Sprintf("%d", status)).Inc()
+}
+
